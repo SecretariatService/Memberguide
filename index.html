@@ -1,180 +1,36 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>会员参会流程及常见问题Q&A</title>
-<style>
-  :root{
-    --bg:#f5f8fb;
-    --card:#ffffff;
-    --primary:#0a4b78;
-    --accent:#2b9edb;
-    --muted:#6b7280;
-    --shadow:0 6px 18px rgba(10,75,120,0.12);
-    font-family: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", "Segoe UI", Roboto, Arial;
-  }
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#eaf4fb 60%);color:#0b1420;padding:24px;}
-  h1{margin:0;font-size:20px;color:var(--primary);}
-  .subtitle{color:var(--muted);font-size:13px;margin-top:4px;}
-  header{margin-bottom:18px;}
-
-  .flow-wrap{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;align-items:flex-start;}
-
-  .lane{display:flex;flex-direction:column;gap:14px;align-items:center;min-width:220px;}
-  .node{background:var(--card);border-radius:12px;padding:12px 14px;min-width:200px;text-align:center;
-        box-shadow:var(--shadow);cursor:pointer;border:2px solid transparent;transition:.15s;}
-  .node:hover{box-shadow:0 12px 30px rgba(10,75,120,.14);}
-  .title{font-weight:600;color:var(--primary);font-size:15px;}
-  .desc{font-size:12px;color:var(--muted);margin-top:6px;}
-  .connector{width:2px;background:#d7eaf6;height:18px;border-radius:2px;}
-
-  .arrow-right{width:48px;height:2px;background:linear-gradient(90deg,var(--accent),var(--primary));
-               position:relative;margin:10px 0;}
-  .arrow-right::after{content:"";position:absolute;right:0;top:-5px;
-                      border-left:10px solid var(--primary);
-                      border-top:6px solid transparent;
-                      border-bottom:6px solid transparent;}
-
-  .overlay{position:fixed;inset:0;background:rgba(6,18,28,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:1200;}
-  .overlay.show{display:flex;}
-  .panel{width:100%;max-width:820px;background:var(--card);border-radius:10px;padding:18px;box-shadow:0 18px 40px rgba(2,20,40,.25);max-height:86vh;overflow:auto;}
-  .panel header{display:flex;justify-content:space-between;align-items:center;}
-  .panel h2{margin:0;font-size:18px;color:var(--primary);}
-  .close-btn{background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--muted);}
-  .faq-list{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
-  details{background:#f7fbff;border:1px solid #e2f0fb;padding:10px;border-radius:8px;}
-  summary{cursor:pointer;font-weight:600;}
-  .answer{margin-top:8px;color:#14202a;line-height:1.5;font-size:14px;}
-  .muted-note{font-size:13px;color:var(--muted);margin-top:8px;}
-
-  @media(max-width:860px){
-    .flow-wrap{flex-direction:column;align-items:center;}
-    .lane{min-width:86%;}
-    .arrow-right{width:34px;}
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>嘉宾参会指引</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/js/app.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
-<header>
-  <h1>会员参会流程及常见问题 Q&A</h1>
-  <div class="subtitle">点击任一步骤查看该步骤的常见问题；点击问题查看回答（桌面/手机均适配）</div>
-</header>
-
-<main>
-  <section class="flow-wrap" aria-label="参会流程图">
-    <!-- 嘉宾链条 -->
-    <div class="lane">
-      <div tabindex="0" role="button" class="node" data-step="member_submit">
-        <div class="title">会员中心提报</div><div class="desc">提交嘉宾 / 特邀观众</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="guest_preinvite">
-        <div class="title">嘉宾预邀</div><div class="desc">发出预邀请</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="preinvite_review">
-        <div class="title">预邀审核</div><div class="desc">审核预邀信息</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="receive_link">
-        <div class="title">收到注册链接</div><div class="desc">链接含邀请码</div>
-      </div>
-      <!-- 关键：箭头指向右侧注册 -->
-      <div class="arrow-right"></div>
+  <header>
+    <h1 id="page-title">嘉宾参会指引</h1>
+    <div class="subtitle" id="page-subtitle"></div>
+    <div class="row" style="margin-top:10px;">
+      <input id="search-input" type="text" placeholder="输入关键词检索问题或答案" />
+      <a href="/admin">进入后台编辑</a>
     </div>
+  </header>
 
-    <!-- 特邀观众链条 + 合并后的注册 -->
-    <div class="lane">
-      <div tabindex="0" role="button" class="node" data-step="special_register">
-        <div class="title">特邀观众注册</div><div class="desc">会员中心直接注册</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="register">
-        <div class="title">注册</div><div class="desc">填写证件信息并提交</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="register_review">
-        <div class="title">注册审核</div><div class="desc">审核注册信息</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="bg_check">
-        <div class="title">背审</div><div class="desc">资格复核</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="badge_issue">
-        <div class="title">制证</div><div class="desc">制作并发放证件</div>
-      </div>
-    </div>
+  <section class="card">
+    <h2>参会流程图</h2>
+    <div id="mermaid-container" class="mermaid"></div>
   </section>
-</main>
 
-<!-- FAQ 面板 -->
-<div id="faq-overlay" class="overlay">
-  <div class="panel">
-    <header>
-      <h2 id="panel-title">常见问题</h2>
-      <button class="close-btn" id="close-panel">✕</button>
-    </header>
-    <div id="panel-content">
-      <p class="muted-note">点击问题可展开查看答案。</p>
-      <div class="faq-list" id="faq-list"></div>
-    </div>
-  </div>
-</div>
+  <section class="card">
+    <h2>视频指引</h2>
+    <div id="video-list"></div>
+  </section>
 
-<script>
-const faqData={
-  member_submit:{title:'会员中心提报',faqs:[
-    {q:'在哪里提报？',a:'会员中心左侧“提交参会人”，选择“提交参会嘉宾（特邀观众）”，然后“添加参会嘉宾（特邀观众）”，选择对应会议。'},
-    {q:'为什么显示名额已满？',a:'每次论坛活动名额有限，请以通知为准。如需取消已提报的参会人员，请先删除数据再重新提报。'}]},
-  guest_preinvite:{title:'嘉宾预邀',faqs:[
-    {q:'嘉宾是什么意思？',a:'嘉宾可参加开幕式、主论坛和其他非定向邀请活动。'}]},
-  special_register:{title:'特邀观众注册',faqs:[
-    {q:'特邀观众是什么意思？',a:'特邀观众通常无法进入开幕式，但可以参加主论坛和其他非定向邀请活动。'}]},
-  preinvite_review:{title:'预邀审核',faqs:[
-    {q:'为什么预邀审核没通过？',a:'通常是英文名不规范。国内嘉宾外文名需按拼音填写，例如张三 Zhang San。'}]},
-  receive_link:{title:'收到注册链接',faqs:[
-    {q:'为什么我没收到注册链接？',a:'预邀审核通过后，注册链接会发送到手机号和邮箱。如未收到，请检查垃圾邮箱或短信。'},
-    {q:'为什么点开链接让我输入邀请码？',a:'复制完整链接，在电脑Chrome浏览器上打开，则无需输入邀请码。如果在手机或其他浏览器操作，可能需要输入邀请码。 邀请码包含在注册链接中，为AP开头的8位数字。 例如，注册链接为https://vipcenter.wicinternet.org/invitlink?meetcode=WICxxxxxxxxxxxxxxxx&inviteCode=AP12345678&type=2&lang=cn时，邀请码为：AP12345678'}]},
-  register:{title:'注册',faqs:[
-    {q:'我的注册信息会被用作什么？',a:'用于证件制作和联络人联系，请填写准确。'}]},
-  register_review:{title:'注册审核',faqs:[
-    {q:'为什么注册审核没通过？',a:'常见原因：证件照不合格（需白底、全脸清晰），或信息不一致。'}]},
-  bg_check:{title:'背审',faqs:[
-    {q:'背审需要多久？',a:'一般在注册审核通过后数个工作日完成，具体请联系会务组。'}]},
-  badge_issue:{title:'制证',faqs:[
-    {q:'何时可拿到证件？',a:'证件完成后将在指定地点领取，请关注会务通知。'}]}
-};
-
-const overlay=document.getElementById('faq-overlay');
-const panelTitle=document.getElementById('panel-title');
-const faqList=document.getElementById('faq-list');
-const closeBtn=document.getElementById('close-panel');
-let lastFocus=null;
-
-function openPanel(step){
-  const data=faqData[step];if(!data)return;
-  panelTitle.textContent=data.title+' — 常见问题';
-  faqList.innerHTML='';
-  data.faqs.forEach(item=>{
-    const det=document.createElement('details');
-    const sum=document.createElement('summary');sum.textContent=item.q;
-    const ans=document.createElement('div');ans.className='answer';ans.innerHTML=item.a;
-    det.appendChild(sum);det.appendChild(ans);faqList.appendChild(det);
-  });
-  overlay.classList.add('show');lastFocus=document.activeElement;closeBtn.focus();
-}
-function closePanel(){overlay.classList.remove('show');if(lastFocus)lastFocus.focus();}
-document.querySelectorAll('.node').forEach(n=>{
-  n.addEventListener('click',()=>openPanel(n.dataset.step));
-  n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPanel(n.dataset.step);}});
-});
-closeBtn.addEventListener('click',closePanel);
-overlay.addEventListener('click',e=>{if(e.target===overlay)closePanel();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
-</script>
+  <section>
+    <h2>Q&A 指引</h2>
+    <div id="step-list" class="grid"></div>
+  </section>
 </body>
 </html>
-
-
