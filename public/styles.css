@@ -1,0 +1,70 @@
+:root {
+  --bg: #f6f8fc;
+  --card: #fff;
+  --primary: #0a4b78;
+  --accent: #2b9edb;
+  --muted: #6b7280;
+  --border: #dce8f3;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  color: #0b1420;
+  font-family: system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+header { margin-bottom: 20px; }
+h1 { margin: 0; color: var(--primary); }
+.subtitle { color: var(--muted); margin-top: 8px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.step h3 { margin-top: 0; color: var(--primary); }
+.step p { margin-top: 0; color: var(--muted); }
+details {
+  margin-top: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  background: #f9fcff;
+}
+summary { cursor: pointer; font-weight: 600; }
+.answer { margin-top: 8px; line-height: 1.5; }
+input, textarea, button {
+  font: inherit;
+}
+input[type="text"], textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #c8d9ea;
+  border-radius: 8px;
+}
+textarea { min-height: 110px; }
+button {
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+button.ghost {
+  background: transparent;
+  color: var(--primary);
+}
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.admin-step { border: 1px dashed #b6d3ea; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.faq-item { border-left: 2px solid var(--accent); padding-left: 8px; margin: 8px 0; }
+.video-item { margin: 6px 0; }
+video { max-width: 100%; border-radius: 8px; background: #000; }
+.note { color: var(--muted); font-size: 13px; }

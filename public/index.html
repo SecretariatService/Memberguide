@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>嘉宾参会指引</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/js/app.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1 id="page-title">嘉宾参会指引</h1>
+    <div class="subtitle" id="page-subtitle"></div>
+    <div class="row" style="margin-top:10px;">
+      <input id="search-input" type="text" placeholder="输入关键词检索问题或答案" />
+      <a href="/admin">进入后台编辑</a>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>参会流程图</h2>
+    <div id="mermaid-container" class="mermaid"></div>
+  </section>
+
+  <section class="card">
+    <h2>视频指引</h2>
+    <div id="video-list"></div>
+  </section>
+
+  <section>
+    <h2>Q&A 指引</h2>
+    <div id="step-list" class="grid"></div>
+  </section>
+</body>
+</html>
