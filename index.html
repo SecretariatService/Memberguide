@@ -1,180 +1,466 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>会员参会流程及常见问题Q&A</title>
-<style>
-  :root{
-    --bg:#f5f8fb;
-    --card:#ffffff;
-    --primary:#0a4b78;
-    --accent:#2b9edb;
-    --muted:#6b7280;
-    --shadow:0 6px 18px rgba(10,75,120,0.12);
-    font-family: system-ui, -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft Yahei", "Segoe UI", Roboto, Arial;
-  }
-  body{margin:0;background:linear-gradient(180deg,var(--bg),#eaf4fb 60%);color:#0b1420;padding:24px;}
-  h1{margin:0;font-size:20px;color:var(--primary);}
-  .subtitle{color:var(--muted);font-size:13px;margin-top:4px;}
-  header{margin-bottom:18px;}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>参会指导制作台</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --line: #d8e2f0;
+      --primary: #1c4e80;
+      --accent: #2d8fe6;
+      --muted: #5c6777;
+      --danger: #cb3837;
+      font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
 
-  .flow-wrap{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;align-items:flex-start;}
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: #0f1a27; }
+    button, input, textarea, select { font: inherit; }
+    .app { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
 
-  .lane{display:flex;flex-direction:column;gap:14px;align-items:center;min-width:220px;}
-  .node{background:var(--card);border-radius:12px;padding:12px 14px;min-width:200px;text-align:center;
-        box-shadow:var(--shadow);cursor:pointer;border:2px solid transparent;transition:.15s;}
-  .node:hover{box-shadow:0 12px 30px rgba(10,75,120,.14);}
-  .title{font-weight:600;color:var(--primary);font-size:15px;}
-  .desc{font-size:12px;color:var(--muted);margin-top:6px;}
-  .connector{width:2px;background:#d7eaf6;height:18px;border-radius:2px;}
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: var(--card);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+    }
 
-  .arrow-right{width:48px;height:2px;background:linear-gradient(90deg,var(--accent),var(--primary));
-               position:relative;margin:10px 0;}
-  .arrow-right::after{content:"";position:absolute;right:0;top:-5px;
-                      border-left:10px solid var(--primary);
-                      border-top:6px solid transparent;
-                      border-bottom:6px solid transparent;}
+    h1 { font-size: 20px; margin: 0; color: var(--primary); }
+    .hint { color: var(--muted); font-size: 12px; margin: 0; }
+    .group { border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: #fafcff; }
+    .group h2 { margin: 0 0 10px; font-size: 14px; color: var(--primary); }
 
-  .overlay{position:fixed;inset:0;background:rgba(6,18,28,.45);display:none;align-items:center;justify-content:center;padding:18px;z-index:1200;}
-  .overlay.show{display:flex;}
-  .panel{width:100%;max-width:820px;background:var(--card);border-radius:10px;padding:18px;box-shadow:0 18px 40px rgba(2,20,40,.25);max-height:86vh;overflow:auto;}
-  .panel header{display:flex;justify-content:space-between;align-items:center;}
-  .panel h2{margin:0;font-size:18px;color:var(--primary);}
-  .close-btn{background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--muted);}
-  .faq-list{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
-  details{background:#f7fbff;border:1px solid #e2f0fb;padding:10px;border-radius:8px;}
-  summary{cursor:pointer;font-weight:600;}
-  .answer{margin-top:8px;color:#14202a;line-height:1.5;font-size:14px;}
-  .muted-note{font-size:13px;color:var(--muted);margin-top:8px;}
+    label { display: block; font-size: 12px; margin: 8px 0 4px; color: var(--muted); }
+    input, textarea, select {
+      width: 100%; border: 1px solid #c7d5e8; border-radius: 8px; padding: 8px; background: #fff;
+    }
+    textarea { resize: vertical; min-height: 64px; }
 
-  @media(max-width:860px){
-    .flow-wrap{flex-direction:column;align-items:center;}
-    .lane{min-width:86%;}
-    .arrow-right{width:34px;}
-  }
-</style>
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn {
+      border: none; border-radius: 8px; padding: 8px 10px; cursor: pointer;
+      background: var(--primary); color: #fff; font-size: 13px;
+    }
+    .btn.secondary { background: #eef4fb; color: var(--primary); border: 1px solid #c8dbf2; }
+    .btn.danger { background: var(--danger); }
+
+    .workspace { padding: 18px; display: grid; gap: 14px; grid-template-rows: auto auto 1fr; }
+    .toolbar, .flow, .detail { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+    .toolbar { padding: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .toolbar strong { color: var(--primary); }
+
+    .flow { padding: 12px; overflow: auto; }
+    .flow h3, .detail h3 { margin: 0 0 10px; color: var(--primary); font-size: 16px; }
+
+    .nodes { display: flex; align-items: center; gap: 14px; min-height: 120px; padding: 8px 2px; }
+    .node {
+      min-width: 170px; border-radius: 10px; border: 2px solid #b9cde5; padding: 10px;
+      background: #f9fcff; cursor: pointer;
+    }
+    .node.active { border-color: var(--accent); box-shadow: 0 0 0 3px #d8ebff; }
+    .node small { display: block; color: var(--muted); margin-top: 6px; font-size: 12px; }
+    .arrow { font-size: 24px; color: #9ab8d6; }
+
+    .detail { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #fbfdff; }
+    .list-item { border: 1px dashed #bdd2ea; border-radius: 8px; padding: 8px; margin: 8px 0; background: #fff; }
+    .list-item p { margin: 4px 0; font-size: 13px; }
+    .jump-link { color: var(--accent); text-decoration: none; }
+
+    .media-preview img, .media-preview video { max-width: 100%; border-radius: 8px; border: 1px solid var(--line); }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .detail { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <h1>会员参会流程及常见问题 Q&A</h1>
-  <div class="subtitle">点击任一步骤查看该步骤的常见问题；点击问题查看回答（桌面/手机均适配）</div>
-</header>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>参会指导制作台</h1>
+      <p class="hint">可制作多个参会指导，支持流程图、Q&A、图文视频、节点关联与跨指导跳转链接。</p>
 
-<main>
-  <section class="flow-wrap" aria-label="参会流程图">
-    <!-- 嘉宾链条 -->
-    <div class="lane">
-      <div tabindex="0" role="button" class="node" data-step="member_submit">
-        <div class="title">会员中心提报</div><div class="desc">提交嘉宾 / 特邀观众</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="guest_preinvite">
-        <div class="title">嘉宾预邀</div><div class="desc">发出预邀请</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="preinvite_review">
-        <div class="title">预邀审核</div><div class="desc">审核预邀信息</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="receive_link">
-        <div class="title">收到注册链接</div><div class="desc">链接含邀请码</div>
-      </div>
-      <!-- 关键：箭头指向右侧注册 -->
-      <div class="arrow-right"></div>
-    </div>
+      <section class="group">
+        <h2>指导管理</h2>
+        <label for="guideSelect">当前指导</label>
+        <select id="guideSelect"></select>
+        <label for="guideName">指导名称</label>
+        <input id="guideName" placeholder="例如：论坛嘉宾参会指南" />
+        <div class="btns" style="margin-top: 8px;">
+          <button class="btn" id="saveGuideBtn">保存指导</button>
+          <button class="btn secondary" id="newGuideBtn">新建指导</button>
+        </div>
+      </section>
 
-    <!-- 特邀观众链条 + 合并后的注册 -->
-    <div class="lane">
-      <div tabindex="0" role="button" class="node" data-step="special_register">
-        <div class="title">特邀观众注册</div><div class="desc">会员中心直接注册</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="register">
-        <div class="title">注册</div><div class="desc">填写证件信息并提交</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="register_review">
-        <div class="title">注册审核</div><div class="desc">审核注册信息</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="bg_check">
-        <div class="title">背审</div><div class="desc">资格复核</div>
-      </div>
-      <div class="connector"></div>
-      <div tabindex="0" role="button" class="node" data-step="badge_issue">
-        <div class="title">制证</div><div class="desc">制作并发放证件</div>
-      </div>
-    </div>
-  </section>
-</main>
+      <section class="group">
+        <h2>流程节点编辑</h2>
+        <label for="nodeTitle">节点标题</label>
+        <input id="nodeTitle" placeholder="例如：提交报名信息" />
+        <label for="nodeDesc">节点说明</label>
+        <textarea id="nodeDesc" placeholder="例如：填写姓名、单位、证件等信息"></textarea>
+        <label for="linkNode">关联到节点（可选）</label>
+        <select id="linkNode"></select>
+        <label for="jumpGuide">跳转到其他指导（可选）</label>
+        <select id="jumpGuide"></select>
+        <div class="btns" style="margin-top: 8px;">
+          <button class="btn" id="addNodeBtn">新增节点</button>
+          <button class="btn secondary" id="updateNodeBtn">更新当前节点</button>
+          <button class="btn danger" id="removeNodeBtn">删除当前节点</button>
+        </div>
+      </section>
 
-<!-- FAQ 面板 -->
-<div id="faq-overlay" class="overlay">
-  <div class="panel">
-    <header>
-      <h2 id="panel-title">常见问题</h2>
-      <button class="close-btn" id="close-panel">✕</button>
-    </header>
-    <div id="panel-content">
-      <p class="muted-note">点击问题可展开查看答案。</p>
-      <div class="faq-list" id="faq-list"></div>
-    </div>
+      <section class="group">
+        <h2>内容添加</h2>
+        <label for="qaQuestion">Q&A - 问题</label>
+        <input id="qaQuestion" placeholder="请输入问题" />
+        <label for="qaAnswer">Q&A - 答案</label>
+        <textarea id="qaAnswer" placeholder="请输入答案"></textarea>
+        <button class="btn" id="addQaBtn" style="margin-top:8px;">添加 Q&A 到当前节点</button>
+
+        <label for="mediaType">媒体类型</label>
+        <select id="mediaType">
+          <option value="image">图片</option>
+          <option value="video">视频</option>
+          <option value="text">纯文字</option>
+        </select>
+        <label for="mediaValue">媒体内容（URL 或文本）</label>
+        <textarea id="mediaValue" placeholder="图片/视频请填链接，文字可直接输入"></textarea>
+        <button class="btn" id="addMediaBtn" style="margin-top:8px;">添加媒体到当前节点</button>
+      </section>
+    </aside>
+
+    <main class="workspace">
+      <section class="toolbar">
+        <div>
+          <strong id="guideTitle">未选择指导</strong>
+          <div class="hint" id="statusText">请先创建一个指导。</div>
+        </div>
+        <div class="btns">
+          <button class="btn secondary" id="exportBtn">导出 JSON</button>
+          <button class="btn secondary" id="importBtn">导入 JSON</button>
+          <button class="btn" id="openTargetBtn">打开节点跳转指导</button>
+        </div>
+      </section>
+
+      <section class="flow">
+        <h3>流程图（点击节点查看详情）</h3>
+        <div class="nodes" id="nodesCanvas"></div>
+      </section>
+
+      <section class="detail">
+        <article class="card">
+          <h3>Q&A</h3>
+          <div id="qaList"></div>
+        </article>
+        <article class="card">
+          <h3>媒体内容</h3>
+          <div id="mediaList" class="media-preview"></div>
+        </article>
+      </section>
+    </main>
   </div>
-</div>
 
-<script>
-const faqData={
-  member_submit:{title:'会员中心提报',faqs:[
-    {q:'在哪里提报？',a:'会员中心左侧“提交参会人”，选择“提交参会嘉宾（特邀观众）”，然后“添加参会嘉宾（特邀观众）”，选择对应会议。'},
-    {q:'为什么显示名额已满？',a:'每次论坛活动名额有限，请以通知为准。如需取消已提报的参会人员，请先删除数据再重新提报。'}]},
-  guest_preinvite:{title:'嘉宾预邀',faqs:[
-    {q:'嘉宾是什么意思？',a:'嘉宾可参加开幕式、主论坛和其他非定向邀请活动。'}]},
-  special_register:{title:'特邀观众注册',faqs:[
-    {q:'特邀观众是什么意思？',a:'特邀观众通常无法进入开幕式，但可以参加主论坛和其他非定向邀请活动。'}]},
-  preinvite_review:{title:'预邀审核',faqs:[
-    {q:'为什么预邀审核没通过？',a:'通常是英文名不规范。国内嘉宾外文名需按拼音填写，例如张三 Zhang San。'}]},
-  receive_link:{title:'收到注册链接',faqs:[
-    {q:'为什么我没收到注册链接？',a:'预邀审核通过后，注册链接会发送到手机号和邮箱。如未收到，请检查垃圾邮箱或短信。'},
-    {q:'为什么点开链接让我输入邀请码？',a:'复制完整链接，在电脑Chrome浏览器上打开，则无需输入邀请码。如果在手机或其他浏览器操作，可能需要输入邀请码。 邀请码包含在注册链接中，为AP开头的8位数字。 例如，注册链接为https://vipcenter.wicinternet.org/invitlink?meetcode=WICxxxxxxxxxxxxxxxx&inviteCode=AP12345678&type=2&lang=cn时，邀请码为：AP12345678'}]},
-  register:{title:'注册',faqs:[
-    {q:'我的注册信息会被用作什么？',a:'用于证件制作和联络人联系，请填写准确。'}]},
-  register_review:{title:'注册审核',faqs:[
-    {q:'为什么注册审核没通过？',a:'常见原因：证件照不合格（需白底、全脸清晰），或信息不一致。'}]},
-  bg_check:{title:'背审',faqs:[
-    {q:'背审需要多久？',a:'一般在注册审核通过后数个工作日完成，具体请联系会务组。'}]},
-  badge_issue:{title:'制证',faqs:[
-    {q:'何时可拿到证件？',a:'证件完成后将在指定地点领取，请关注会务通知。'}]}
-};
+  <script>
+    const STORAGE_KEY = "memberguide_data_v1";
+    const uid = () => `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
 
-const overlay=document.getElementById('faq-overlay');
-const panelTitle=document.getElementById('panel-title');
-const faqList=document.getElementById('faq-list');
-const closeBtn=document.getElementById('close-panel');
-let lastFocus=null;
+    const state = {
+      guides: [],
+      currentGuideId: null,
+      currentNodeId: null,
+    };
 
-function openPanel(step){
-  const data=faqData[step];if(!data)return;
-  panelTitle.textContent=data.title+' — 常见问题';
-  faqList.innerHTML='';
-  data.faqs.forEach(item=>{
-    const det=document.createElement('details');
-    const sum=document.createElement('summary');sum.textContent=item.q;
-    const ans=document.createElement('div');ans.className='answer';ans.innerHTML=item.a;
-    det.appendChild(sum);det.appendChild(ans);faqList.appendChild(det);
-  });
-  overlay.classList.add('show');lastFocus=document.activeElement;closeBtn.focus();
-}
-function closePanel(){overlay.classList.remove('show');if(lastFocus)lastFocus.focus();}
-document.querySelectorAll('.node').forEach(n=>{
-  n.addEventListener('click',()=>openPanel(n.dataset.step));
-  n.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPanel(n.dataset.step);}});
-});
-closeBtn.addEventListener('click',closePanel);
-overlay.addEventListener('click',e=>{if(e.target===overlay)closePanel();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
-</script>
+    function bootstrap() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        Object.assign(state, JSON.parse(raw));
+      }
+      if (!state.guides.length) {
+        const demoGuide = createGuide("示例参会指导");
+        demoGuide.nodes.push(createNode("提交参会申请", "填写嘉宾资料并提交审核"));
+        demoGuide.nodes.push(createNode("等待审核", "主办方完成资料审核"));
+        demoGuide.nodes.push(createNode("收到确认通知", "短信与邮件双渠道通知"));
+        state.guides.push(demoGuide);
+        state.currentGuideId = demoGuide.id;
+        state.currentNodeId = demoGuide.nodes[0].id;
+      }
+      ensureCurrentRefs();
+      render();
+    }
+
+    function createGuide(name) {
+      return { id: uid(), name, nodes: [] };
+    }
+
+    function createNode(title, description) {
+      return {
+        id: uid(),
+        title,
+        description,
+        qa: [],
+        media: [],
+        relationNodeId: "",
+        jumpGuideId: "",
+      };
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function ensureCurrentRefs() {
+      const guide = state.guides.find(g => g.id === state.currentGuideId) || state.guides[0];
+      state.currentGuideId = guide?.id || null;
+      state.currentNodeId = guide?.nodes.find(n => n.id === state.currentNodeId)?.id || guide?.nodes[0]?.id || null;
+    }
+
+    function currentGuide() {
+      return state.guides.find(g => g.id === state.currentGuideId);
+    }
+
+    function currentNode() {
+      const guide = currentGuide();
+      return guide?.nodes.find(n => n.id === state.currentNodeId);
+    }
+
+    function render() {
+      ensureCurrentRefs();
+      persist();
+      renderGuideSelector();
+      renderNodeFormOptions();
+      renderFlow();
+      renderDetails();
+      const guide = currentGuide();
+      document.getElementById("guideTitle").textContent = guide ? `当前指导：${guide.name}` : "未选择指导";
+      document.getElementById("statusText").textContent = guide ? `共 ${guide.nodes.length} 个流程节点` : "请先创建一个指导。";
+      document.getElementById("guideName").value = guide?.name || "";
+      fillNodeForm();
+    }
+
+    function renderGuideSelector() {
+      const select = document.getElementById("guideSelect");
+      select.innerHTML = state.guides.map(g => `<option value="${g.id}">${g.name}</option>`).join("");
+      select.value = state.currentGuideId || "";
+
+      const jump = document.getElementById("jumpGuide");
+      const options = ['<option value="">不设置跳转</option>'].concat(state.guides.map(g => `<option value="${g.id}">${g.name}</option>`));
+      jump.innerHTML = options.join("");
+    }
+
+    function renderNodeFormOptions() {
+      const guide = currentGuide();
+      const select = document.getElementById("linkNode");
+      if (!guide) {
+        select.innerHTML = '<option value="">无可关联节点</option>';
+        return;
+      }
+      const opts = ['<option value="">不设置关联</option>'].concat(
+        guide.nodes.map(n => `<option value="${n.id}">${n.title}</option>`)
+      );
+      select.innerHTML = opts.join("");
+    }
+
+    function renderFlow() {
+      const wrap = document.getElementById("nodesCanvas");
+      const guide = currentGuide();
+      if (!guide || !guide.nodes.length) {
+        wrap.innerHTML = "<p class='hint'>暂无流程节点，请从左侧新增。</p>";
+        return;
+      }
+
+      wrap.innerHTML = guide.nodes.map((node, idx) => {
+        const relation = node.relationNodeId ? `<small>关联节点：${findNodeTitle(guide, node.relationNodeId)}</small>` : "";
+        const jump = node.jumpGuideId ? `<small>跳转指导：${findGuideName(node.jumpGuideId)}</small>` : "";
+        const arrow = idx < guide.nodes.length - 1 ? "<span class='arrow'>→</span>" : "";
+        return `
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="node ${node.id === state.currentNodeId ? "active" : ""}" data-node-id="${node.id}">
+              <strong>${node.title}</strong>
+              <small>${node.description || "无说明"}</small>
+              ${relation}
+              ${jump}
+            </div>
+            ${arrow}
+          </div>
+        `;
+      }).join("");
+
+      wrap.querySelectorAll(".node").forEach(el => {
+        el.addEventListener("click", () => {
+          state.currentNodeId = el.dataset.nodeId;
+          render();
+        });
+      });
+    }
+
+    function renderDetails() {
+      const node = currentNode();
+      const qaList = document.getElementById("qaList");
+      const mediaList = document.getElementById("mediaList");
+
+      if (!node) {
+        qaList.innerHTML = "<p class='hint'>请选择节点查看详情。</p>";
+        mediaList.innerHTML = "<p class='hint'>请选择节点查看详情。</p>";
+        return;
+      }
+
+      qaList.innerHTML = node.qa.length ? node.qa.map(item => `
+        <div class="list-item"><p><strong>Q:</strong> ${item.q}</p><p><strong>A:</strong> ${item.a}</p></div>
+      `).join("") : "<p class='hint'>当前节点暂无 Q&A。</p>";
+
+      mediaList.innerHTML = node.media.length ? node.media.map(item => {
+        if (item.type === "image") return `<div class='list-item'><p>图片</p><img src="${item.value}" alt="节点图片" /></div>`;
+        if (item.type === "video") return `<div class='list-item'><p>视频</p><video controls src="${item.value}"></video></div>`;
+        return `<div class='list-item'><p>文字</p><p>${item.value}</p></div>`;
+      }).join("") : "<p class='hint'>当前节点暂无媒体内容。</p>";
+    }
+
+    function fillNodeForm() {
+      const node = currentNode();
+      document.getElementById("nodeTitle").value = node?.title || "";
+      document.getElementById("nodeDesc").value = node?.description || "";
+      document.getElementById("linkNode").value = node?.relationNodeId || "";
+      document.getElementById("jumpGuide").value = node?.jumpGuideId || "";
+    }
+
+    function findGuideName(id) {
+      return state.guides.find(g => g.id === id)?.name || "未知指导";
+    }
+
+    function findNodeTitle(guide, nodeId) {
+      return guide.nodes.find(n => n.id === nodeId)?.title || "未知节点";
+    }
+
+    document.getElementById("guideSelect").addEventListener("change", (e) => {
+      state.currentGuideId = e.target.value;
+      state.currentNodeId = currentGuide()?.nodes[0]?.id || null;
+      render();
+    });
+
+    document.getElementById("saveGuideBtn").addEventListener("click", () => {
+      const guide = currentGuide();
+      if (!guide) return;
+      const name = document.getElementById("guideName").value.trim();
+      if (!name) return alert("指导名称不能为空");
+      guide.name = name;
+      render();
+    });
+
+    document.getElementById("newGuideBtn").addEventListener("click", () => {
+      const g = createGuide(`新指导 ${state.guides.length + 1}`);
+      g.nodes.push(createNode("开始", "添加你的流程步骤"));
+      state.guides.push(g);
+      state.currentGuideId = g.id;
+      state.currentNodeId = g.nodes[0].id;
+      render();
+    });
+
+    document.getElementById("addNodeBtn").addEventListener("click", () => {
+      const guide = currentGuide();
+      if (!guide) return;
+      const title = document.getElementById("nodeTitle").value.trim();
+      if (!title) return alert("节点标题不能为空");
+      const node = createNode(title, document.getElementById("nodeDesc").value.trim());
+      node.relationNodeId = document.getElementById("linkNode").value;
+      node.jumpGuideId = document.getElementById("jumpGuide").value;
+      guide.nodes.push(node);
+      state.currentNodeId = node.id;
+      render();
+    });
+
+    document.getElementById("updateNodeBtn").addEventListener("click", () => {
+      const node = currentNode();
+      if (!node) return;
+      const title = document.getElementById("nodeTitle").value.trim();
+      if (!title) return alert("节点标题不能为空");
+      node.title = title;
+      node.description = document.getElementById("nodeDesc").value.trim();
+      node.relationNodeId = document.getElementById("linkNode").value;
+      node.jumpGuideId = document.getElementById("jumpGuide").value;
+      render();
+    });
+
+    document.getElementById("removeNodeBtn").addEventListener("click", () => {
+      const guide = currentGuide();
+      const node = currentNode();
+      if (!guide || !node) return;
+      guide.nodes = guide.nodes.filter(n => n.id !== node.id);
+      state.currentNodeId = guide.nodes[0]?.id || null;
+      render();
+    });
+
+    document.getElementById("addQaBtn").addEventListener("click", () => {
+      const node = currentNode();
+      if (!node) return;
+      const q = document.getElementById("qaQuestion").value.trim();
+      const a = document.getElementById("qaAnswer").value.trim();
+      if (!q || !a) return alert("Q 和 A 不能为空");
+      node.qa.push({ q, a });
+      document.getElementById("qaQuestion").value = "";
+      document.getElementById("qaAnswer").value = "";
+      render();
+    });
+
+    document.getElementById("addMediaBtn").addEventListener("click", () => {
+      const node = currentNode();
+      if (!node) return;
+      const type = document.getElementById("mediaType").value;
+      const value = document.getElementById("mediaValue").value.trim();
+      if (!value) return alert("媒体内容不能为空");
+      node.media.push({ type, value });
+      document.getElementById("mediaValue").value = "";
+      render();
+    });
+
+    document.getElementById("openTargetBtn").addEventListener("click", () => {
+      const node = currentNode();
+      if (!node || !node.jumpGuideId) return alert("当前节点未设置跳转指导");
+      state.currentGuideId = node.jumpGuideId;
+      state.currentNodeId = currentGuide()?.nodes[0]?.id || null;
+      render();
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const content = JSON.stringify(state.guides, null, 2);
+      const blob = new Blob([content], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "memberguide-export.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById("importBtn").addEventListener("click", () => {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = "application/json";
+      inp.onchange = () => {
+        const f = inp.files?.[0];
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            state.guides = JSON.parse(String(reader.result));
+            state.currentGuideId = state.guides[0]?.id || null;
+            state.currentNodeId = state.guides[0]?.nodes[0]?.id || null;
+            render();
+          } catch {
+            alert("导入失败，JSON 格式有误");
+          }
+        };
+        reader.readAsText(f);
+      };
+      inp.click();
+    });
+
+    bootstrap();
+  </script>
 </body>
 </html>
-
-
