@@ -144,6 +144,7 @@
         </div>
         <div class="btns">
           <button class="btn secondary" id="exportBtn">导出 JSON</button>
+          <button class="btn secondary" id="exportWebBtn">导出网页</button>
           <button class="btn secondary" id="importBtn">导入 JSON</button>
           <button class="btn" id="openTargetBtn">打开节点跳转指导</button>
         </div>
@@ -311,15 +312,134 @@
         return;
       }
 
-      qaList.innerHTML = node.qa.length ? node.qa.map(item => `
-        <div class="list-item"><p><strong>Q:</strong> ${item.q}</p><p><strong>A:</strong> ${item.a}</p></div>
+      qaList.innerHTML = node.qa.length ? node.qa.map((item, index) => `
+        <div class="list-item">
+          <p><strong>Q:</strong> ${item.q}</p>
+          <p><strong>A:</strong> ${item.a}</p>
+          <div class="btns">
+            <button class="btn secondary" data-action="edit-qa" data-index="${index}">编辑</button>
+            <button class="btn danger" data-action="delete-qa" data-index="${index}">删除</button>
+          </div>
+        </div>
       `).join("") : "<p class='hint'>当前节点暂无 Q&A。</p>";
 
-      mediaList.innerHTML = node.media.length ? node.media.map(item => {
-        if (item.type === "image") return `<div class='list-item'><p>图片</p><img src="${item.value}" alt="节点图片" /></div>`;
-        if (item.type === "video") return `<div class='list-item'><p>视频</p><video controls src="${item.value}"></video></div>`;
-        return `<div class='list-item'><p>文字</p><p>${item.value}</p></div>`;
+      mediaList.innerHTML = node.media.length ? node.media.map((item, index) => {
+        const actions = `
+          <div class="btns">
+            <button class="btn secondary" data-action="edit-media" data-index="${index}">编辑</button>
+            <button class="btn danger" data-action="delete-media" data-index="${index}">删除</button>
+          </div>
+        `;
+        if (item.type === "image") return `<div class='list-item'><p>图片</p><img src="${item.value}" alt="节点图片" />${actions}</div>`;
+        if (item.type === "video") return `<div class='list-item'><p>视频</p><video controls src="${item.value}"></video>${actions}</div>`;
+        return `<div class='list-item'><p>文字</p><p>${item.value}</p>${actions}</div>`;
       }).join("") : "<p class='hint'>当前节点暂无媒体内容。</p>";
+
+      qaList.querySelectorAll('[data-action="edit-qa"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.index);
+          const target = node.qa[index];
+          if (!target) return;
+          const q = prompt('编辑问题：', target.q);
+          if (q === null) return;
+          const a = prompt('编辑答案：', target.a);
+          if (a === null) return;
+          if (!q.trim() || !a.trim()) return alert('Q 和 A 不能为空');
+          target.q = q.trim();
+          target.a = a.trim();
+          render();
+        });
+      });
+
+      qaList.querySelectorAll('[data-action="delete-qa"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.index);
+          if (!window.confirm('确认删除该 Q&A 吗？')) return;
+          node.qa.splice(index, 1);
+          render();
+        });
+      });
+
+      mediaList.querySelectorAll('[data-action="edit-media"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.index);
+          const target = node.media[index];
+          if (!target) return;
+          const type = prompt('编辑媒体类型（image/video/text）：', target.type);
+          if (type === null) return;
+          if (!["image", "video", "text"].includes(type.trim())) return alert('媒体类型仅支持 image/video/text');
+          const value = prompt('编辑媒体内容（URL 或文本）：', target.value);
+          if (value === null) return;
+          if (!value.trim()) return alert('媒体内容不能为空');
+          target.type = type.trim();
+          target.value = value.trim();
+          render();
+        });
+      });
+
+      mediaList.querySelectorAll('[data-action="delete-media"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const index = Number(btn.dataset.index);
+          if (!window.confirm('确认删除该媒体内容吗？')) return;
+          node.media.splice(index, 1);
+          render();
+        });
+      });
+    }
+
+    function exportGuideAsWebPage() {
+      const guide = currentGuide();
+      if (!guide) return alert('请先选择一个指导再导出网页');
+
+      const guideJson = JSON.stringify(guide, null, 2);
+      const html = `<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>${guide.name} - 参会指导</title>
+  <style>
+    body { font-family: "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0; background: #f5f7fb; color: #122033; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+    h1 { margin: 0 0 8px; color: #1c4e80; }
+    .hint { color: #5c6777; margin-bottom: 20px; }
+    .card { background: #fff; border: 1px solid #d8e2f0; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+    .qa, .media { border: 1px dashed #bdd2ea; border-radius: 8px; padding: 10px; margin: 8px 0; background: #fbfdff; }
+    img, video { max-width: 100%; border-radius: 8px; border: 1px solid #d8e2f0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>${guide.name}</h1>
+    <p class="hint">共 ${guide.nodes.length} 个流程节点</p>
+    <div id="content"></div>
+  </div>
+  <script>
+    const guide = ${guideJson};
+    const root = document.getElementById('content');
+    root.innerHTML = guide.nodes.map((node, index) => {
+      const qa = (node.qa || []).length
+        ? (node.qa || []).map((item) => `<div class="qa"><p><strong>Q:</strong> ${item.q}</p><p><strong>A:</strong> ${item.a}</p></div>`).join('')
+        : '<p class="hint">暂无 Q&A</p>';
+      const media = (node.media || []).length
+        ? (node.media || []).map((item) => {
+          if (item.type === 'image') return `<div class="media"><p>图片</p><img src="${item.value}" alt="节点图片" /></div>`;
+          if (item.type === 'video') return `<div class="media"><p>视频</p><video controls src="${item.value}"></video></div>`;
+          return `<div class="media"><p>文字</p><p>${item.value}</p></div>`;
+        }).join('')
+        : '<p class="hint">暂无媒体内容</p>';
+      return `<section class="card"><h2>${index + 1}. ${node.title}</h2><p>${node.description || ''}</p><h3>Q&A</h3>${qa}<h3>媒体素材</h3>${media}</section>`;
+    }).join('');
+  </script>
+</body>
+</html>`;
+
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${guide.name || 'memberguide'}.html`;
+      a.click();
+      URL.revokeObjectURL(a.href);
     }
 
     function fillNodeForm() {
@@ -435,6 +555,10 @@
       a.download = "memberguide-export.json";
       a.click();
       URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById("exportWebBtn").addEventListener("click", () => {
+      exportGuideAsWebPage();
     });
 
     document.getElementById("importBtn").addEventListener("click", () => {
