@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>后台编辑 - 嘉宾参会指引</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="module" src="/js/admin.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>后台编辑</h1>
+    <div class="subtitle">可编辑流程图、步骤Q&A、视频上传；确认保存后前端同步更新。</div>
+    <a href="/">返回前端查看</a>
+  </header>
+
+  <section class="card">
+    <h2>基础信息</h2>
+    <label>标题</label>
+    <input id="title-input" type="text" />
+    <label>副标题</label>
+    <input id="subtitle-input" type="text" />
+  </section>
+
+  <section class="card">
+    <h2>流程图（Mermaid）</h2>
+    <p class="note">示例：flowchart LR; A[开始] --> B[结束]</p>
+    <textarea id="flowchart-input"></textarea>
+  </section>
+
+  <section class="card">
+    <h2>视频管理</h2>
+    <div class="row">
+      <input id="video-file" type="file" accept="video/*" />
+      <button id="upload-video-btn" type="button">上传视频</button>
+    </div>
+    <div id="admin-video-list"></div>
+  </section>
+
+  <section class="card">
+    <h2>步骤与Q&A</h2>
+    <div id="admin-steps"></div>
+    <button id="add-step-btn" class="ghost" type="button">+ 新增步骤</button>
+  </section>
+
+  <section class="row">
+    <button id="save-btn" type="button">确认保存</button>
+    <span id="save-msg" class="note"></span>
+  </section>
+</body>
+</html>
