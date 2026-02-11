@@ -1,9 +1,30 @@
 {
-  "name": "memberguide",
+  "name": "memberguide-desktop",
   "version": "1.0.0",
-  "description": "Q&A guest participation guide with admin and frontend",
-  "main": "server.js",
+  "description": "参会指导制作工具（支持流程图/Q&A/媒体/跨指导跳转）",
+  "main": "main.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "electron .",
+    "pack-win": "electron-builder --win portable"
+  },
+  "devDependencies": {
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "org.memberguide.desktop",
+    "productName": "MemberGuideBuilder",
+    "files": [
+      "index.html",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "MemberGuideBuilder-${version}.exe"
+    }
   }
 }
